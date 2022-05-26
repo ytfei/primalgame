@@ -15,7 +15,7 @@ async function deploy(contractName) {
 }
 
 async function main() {
-  const contractNames = ["Coin", "Earth", "Fire", "Life", "Water", "Wind", "Source"]
+  const contractNames = ["Mote", "Earth", "Fire", "Life", "Water", "Air", "Might"]
   for (c of contractNames) {
     await deploy(c)
   }

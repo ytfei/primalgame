@@ -60,20 +60,20 @@ library LibPrimalMetaData {
     }
 
     // TODO: deploy contract and replace with new addresses
-    // Coin is deployed to: 0x669F2f448f248103eA3dcc12A7F49E559AFf7A2A
-    // Earth is deployed to: 0x0C059ddD14DE7F07c7fAec7e59a60c7bc610ea28
-    // Fire is deployed to: 0xb46Da3E5a1798E1f4f6965836Bd65424Ef02C8ee
-    // Life is deployed to: 0x7b92fDe64b15773D2C240C58AE4508E0A5ac5B4F
-    // Water is deployed to: 0xB2Fea2b212aD2AA230967084dA78eE4622A59617
-    // Wind is deployed to: 0xff975B63489E384CD481352C93a17fc3841b1614
-    // Source is deployed to: 0x54d3BdD5e7EE6bb0A900B1CbF1a0df144D9122df
-    IERC20 public constant WIND = IERC20(0xff975B63489E384CD481352C93a17fc3841b1614);
-    IERC20 public constant LIFE = IERC20(0x7b92fDe64b15773D2C240C58AE4508E0A5ac5B4F);
-    IERC20 public constant WATER = IERC20(0xB2Fea2b212aD2AA230967084dA78eE4622A59617);
-    IERC20 public constant FIRE = IERC20(0xb46Da3E5a1798E1f4f6965836Bd65424Ef02C8ee);
-    IERC20 public constant EARTH = IERC20(0x0C059ddD14DE7F07c7fAec7e59a60c7bc610ea28);
-    IERC20 public constant SOURCE = IERC20(0x54d3BdD5e7EE6bb0A900B1CbF1a0df144D9122df);
-    IERC20 public constant PRIMALCOIN = IERC20(0x669F2f448f248103eA3dcc12A7F49E559AFf7A2A);
+// Mote is deployed to: 0x444e866cbbE74ccec258b939b9246682c894F734
+// Earth is deployed to: 0x32E0259b6659a0F72e88104B0B70Fc6f2CFcA69f
+// Fire is deployed to: 0xBf48470E1858AB44DD3a8F7A6b9d6BBE22F84363
+// Life is deployed to: 0x09bc45Ca128856F1e33e09762500BC6dacf3A59C
+// Water is deployed to: 0xb855779719d96ca2f1F3580E9c00C9B5eC460260
+// Air is deployed to: 0xdd9a33A07D22C60ad2D7E1Db5d02a6f4973151C1
+// Might is deployed to: 0x29C27a8fFd81532CfC3E51945568AAaf26163F5f
+    IERC20 public constant WIND = IERC20(0xdd9a33A07D22C60ad2D7E1Db5d02a6f4973151C1); // Air
+    IERC20 public constant LIFE = IERC20(0x09bc45Ca128856F1e33e09762500BC6dacf3A59C); 
+    IERC20 public constant WATER = IERC20(0xb855779719d96ca2f1F3580E9c00C9B5eC460260);
+    IERC20 public constant FIRE = IERC20(0xBf48470E1858AB44DD3a8F7A6b9d6BBE22F84363);
+    IERC20 public constant EARTH = IERC20(0x32E0259b6659a0F72e88104B0B70Fc6f2CFcA69f);
+    IERC20 public constant SOURCE = IERC20(0x29C27a8fFd81532CfC3E51945568AAaf26163F5f); // Might 原始力量，原力
+    IERC20 public constant PRIMALCOIN = IERC20(0x444e866cbbE74ccec258b939b9246682c894F734); // Mote  微粒，用于合成其它的资源
 
     
     // struct Attribute {
