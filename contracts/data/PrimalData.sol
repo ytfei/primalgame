@@ -116,8 +116,8 @@ contract PrimalData is IPrimalData,AccessControl{
     }
 
     //更新英雄的属性
-    function updatePrimalAttibute(uint tokenId) public override isPrimalExist(tokenId) onlyRole(UPDATE_ROLE) {
-        _generateRandomAttr(_primals[tokenId].rarity,tokenId);
+    function updatePrimalAttibute(uint tokenId,uint rarity) public override isPrimalExist(tokenId) onlyRole(UPDATE_ROLE) {
+        _generateRandomAttr(rarity,tokenId);
     }
 
     //更新英雄技能

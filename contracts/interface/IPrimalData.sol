@@ -21,7 +21,7 @@ interface IPrimalData  {
     function getPrimalInfo(uint tokenId) external view returns (uint8 stamina, uint8 rarity,uint8 faction,uint8 element );
 
     //重铸英雄的属性
-    function updatePrimalAttibute(uint tokenId) external;
+    function updatePrimalAttibute(uint tokenId,uint rarity) external;
 
     //重铸英雄的技能
     function updatePrimalSkill(uint tokenId) external;
@@ -33,7 +33,7 @@ interface IPrimalData  {
     function getPrimalFaction(uint tokenId) external view returns (uint8 faction);
 
 
-    //获取英雄阵营
+    //获取英雄稀有度
     function getPrimalRarity(uint tokenId) external view returns (uint8 rarity);
 
     //设置英雄阵营

@@ -11,7 +11,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "./RewardPool.sol";
 import "../interface/IPrimalData.sol";
-import "../interface/IMinning.sol";
+import "../interface/IMining.sol";
 import "../lib/LibPrimalMetaData.sol";
 import "../lib/struct/LibUintSet.sol";
 import "../lib/LibRandom.sol";
@@ -142,12 +142,13 @@ contract NFTMinging is IMining,IERC721Receiver, Ownable{
         //撕逼输的那个扣好感度
         primalRepo.consumePrimalStamina(success ? targetId : tokenId);
         if(success) {
-           uint plunderReward =  rewardPool[poolType].subReward(_stakes[targetId],_basePlunerRate[primalRepo.getPrimalRarity(tokenId)]);
+            uint stakeAmount = _getStakeAmount(targetId);
+            uint plunderReward =  rewardPool[poolType].subReward(_stakes[targetId],_basePlunerRate[primalRepo.getPrimalRarity(tokenId)],stakeAmount);
             //todo 记录用户对应的资源数
-            _plunderAmounts[msg.sender][poolType] = plunderReward;
+            _plunderAmounts[msg.sender][poolType] = _plunderAmounts[msg.sender][poolType].add(plunderReward);
             //event事件
             uint[] memory reward = new uint[](rewardPool.length);
-            reward[poolType] = reward[poolType].add(plunderReward) ;
+            reward[poolType] = plunderReward ;
             emit PlunderReward(msg.sender,_stakes[targetId],tokenId,targetId,block.timestamp,reward);
         }
         //好感度掉为0后，有一定概率被俘获

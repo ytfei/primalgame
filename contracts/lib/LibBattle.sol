@@ -31,7 +31,7 @@ library LibBattle  {
 
 
 
-    //一个回合的伤害 生命0 攻击1 暴击2 速度3 防御4 闪避5
+    //一个回合的伤害，伤害放大了1000倍 生命0 攻击1 暴击2 速度3 防御4 闪避5
     function damage(uint[] memory primalAttrs, uint[] memory targetAttrs,bool isRestraint,uint round) internal view returns (uint) {
         //攻击方攻击
         uint attackValue = primalAttrs[uint(LibPrimalMetaData.AttrType.Attack)];
@@ -41,23 +41,23 @@ library LibBattle  {
         uint defenseValue = targetAttrs[uint(LibPrimalMetaData.AttrType.Defense)];
         //防御方闪避
         uint dodgeValue = targetAttrs[uint(LibPrimalMetaData.AttrType.Dodge)];
-        //判断是否相克
+        //判断是否相克 ,攻击放大10倍。 14*1.2 = 16.8 ==> 16 -> 168
         if(isRestraint) {
-            attackValue = attackValue + attackValue * 20 / 100;
+            attackValue = attackValue * 12  ;
         }
         //判断本轮防御方是否闪避
         bool isDodge = LibRandom.randMod(100,round) < dodgeValue ;
         if(isDodge)
             return 0;
-        //判断本轮攻击方是否暴击
+        //判断本轮攻击方是否暴击 
         bool isCrit = LibRandom.randMod(100,round + 1) < critValue;
-        if (isCrit) {
+        if (isCrit) { 
             attackValue = attackValue + attackValue * 50 / 100;
         }
-        //这里的防御是防御率。。
+        //这里的防御是防御率。。  16.8 * (100 -14) /  100 = 14.448  ==>  16.8 * 10 * 0.86 * 100 --> 100
         return attackValue * (100 - defenseValue);
     } 
-
+    
     //侵略如火 ==> 两个人决斗 生命0 攻击1 暴击2 速度3 防御4 闪避5
     function battle(uint primalId, uint targetId,IPrimalData primalRepo) internal view returns(bool,bool,uint[] memory) {
         //获取两个干架人的属性
@@ -65,11 +65,13 @@ library LibBattle  {
         uint[] memory targetAttrs = primalRepo.getPrimalAllAttribute(targetId);
         //其疾如风 ==> 判断谁先出手
         bool first = primalAttrs[uint(LibPrimalMetaData.AttrType.Speed)] >= targetAttrs[uint(LibPrimalMetaData.AttrType.Speed)]; 
-
-        bool isRestraint = restraint(primalRepo.getPriamlElement(primalId),primalRepo.getPriamlElement(targetId));
+        //判断攻击者是否克制防御者
+        bool isRestraintTarget = restraint(primalRepo.getPriamlElement(primalId),primalRepo.getPriamlElement(targetId));
+        //判断防御者是否克制攻击者
+        bool isRestraintAttack = restraint(primalRepo.getPriamlElement(targetId),primalRepo.getPriamlElement(primalId));
         // 获取我方和敌方生命
-        uint myHP = primalAttrs[uint(LibPrimalMetaData.AttrType.Hp)] * 100;
-        uint targetHP = targetAttrs[uint(LibPrimalMetaData.AttrType.Hp)] * 100;
+        uint myHP = primalAttrs[uint(LibPrimalMetaData.AttrType.Hp)] * 1000;
+        uint targetHP = targetAttrs[uint(LibPrimalMetaData.AttrType.Hp)] * 1000;
         uint256[] memory fight = new uint256[](20);
         //记录回合数
         uint i = 0;
@@ -77,16 +79,16 @@ library LibBattle  {
         while(myHP > 0 && targetHP > 0){
             uint damageNum = 0;
             if(first==true && i%2 == 0) { // 我方先攻，偶数回合 0 2 4 6 8
-                damageNum = damage(primalAttrs, targetAttrs,isRestraint,i);
+                damageNum = damage(primalAttrs, targetAttrs,isRestraintTarget,i);
                 targetHP = lessZero(targetHP, damageNum);
             }else if(first==false && i%2 == 0) { // 敌方先攻，偶数回合
-                damageNum = damage(targetAttrs, primalAttrs,!isRestraint,i);
+                damageNum = damage(targetAttrs, primalAttrs,isRestraintAttack,i);
                 myHP = lessZero(myHP, damageNum);
             } else if(first==false && i%2 == 1) { // 敌方先攻，奇数回合
-                damageNum = damage(primalAttrs, targetAttrs,isRestraint,i);
+                damageNum = damage(primalAttrs, targetAttrs,isRestraintTarget,i);
                 targetHP = lessZero(targetHP, damageNum);
             } else { // 我方先攻，奇数回合 1 3 5 7 9
-                damageNum = damage(targetAttrs, primalAttrs,!isRestraint,i);
+                damageNum = damage(targetAttrs, primalAttrs,isRestraintAttack,i);
                 myHP = lessZero(myHP, damageNum);
             }
             // 记录下每次攻击的伤害

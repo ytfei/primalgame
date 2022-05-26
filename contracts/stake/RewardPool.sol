@@ -109,10 +109,11 @@ contract RewardPool  {
         }
     }
 
-    function subReward(address _user,uint rate) public onlyManager returns(uint256 plunderReward) {
+    function subReward(address _user,uint rate,uint stakeAmount) public onlyManager returns(uint256 plunderReward) {
          _farm(_user);
         UserInfo storage user = _userInfo[_user];
-        plunderReward = user.rewardBalance.mul(rate).div(100);
+        uint tokenRate = stakeAmount.div(user.stake) * 100;
+        plunderReward = user.rewardBalance.mul(tokenRate).mul(rate).div(10000);
         user.rewardBalance = user.rewardBalance.sub(plunderReward);
         user.rewardDebt = user.stake.mul(_accRewardPerShare).div(1e12);
         emit TakeReward(_user, plunderReward);
