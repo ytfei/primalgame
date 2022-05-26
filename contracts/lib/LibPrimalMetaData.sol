@@ -59,13 +59,14 @@ library LibPrimalMetaData {
         Plunder
     }
 
-    IERC20 public constant WIND = IERC20(WIND_ADDRESS);
-    IERC20 public constant LIFE = IERC20(LIFE_ADDRESS);
-    IERC20 public constant WATER = IERC20(WATER_ADDRESS);
-    IERC20 public constant FIRE = IERC20(FIRE_ADDRESS);
-    IERC20 public constant EARTH = IERC20(EARTH_ADDRESS);
-    IERC20 public constant SOURCE = IERC20(SOURCE_ADDRESS);
-    IERC20 public constant PRIMALCOIN = IERC20(PRIMALCOIN_ADDRESS);
+    //TODO: deploy contract and replace with new addresses
+    IERC20 public constant WIND = IERC20(0x5A99A8A5225EF3f589Ad94e2865ac30b7bBF61F3);
+    IERC20 public constant LIFE = IERC20(0x5A99A8A5225EF3f589Ad94e2865ac30b7bBF61F3);
+    IERC20 public constant WATER = IERC20(0x5A99A8A5225EF3f589Ad94e2865ac30b7bBF61F3);
+    IERC20 public constant FIRE = IERC20(0x5A99A8A5225EF3f589Ad94e2865ac30b7bBF61F3);
+    IERC20 public constant EARTH = IERC20(0x5A99A8A5225EF3f589Ad94e2865ac30b7bBF61F3);
+    IERC20 public constant SOURCE = IERC20(0x5A99A8A5225EF3f589Ad94e2865ac30b7bBF61F3);
+    IERC20 public constant PRIMALCOIN = IERC20(0x5A99A8A5225EF3f589Ad94e2865ac30b7bBF61F3);
 
     
     // struct Attribute {
