@@ -59,14 +59,21 @@ library LibPrimalMetaData {
         Plunder
     }
 
-    //TODO: deploy contract and replace with new addresses
-    IERC20 public constant WIND = IERC20(0x5A99A8A5225EF3f589Ad94e2865ac30b7bBF61F3);
-    IERC20 public constant LIFE = IERC20(0x5A99A8A5225EF3f589Ad94e2865ac30b7bBF61F3);
-    IERC20 public constant WATER = IERC20(0x5A99A8A5225EF3f589Ad94e2865ac30b7bBF61F3);
-    IERC20 public constant FIRE = IERC20(0x5A99A8A5225EF3f589Ad94e2865ac30b7bBF61F3);
-    IERC20 public constant EARTH = IERC20(0x5A99A8A5225EF3f589Ad94e2865ac30b7bBF61F3);
-    IERC20 public constant SOURCE = IERC20(0x5A99A8A5225EF3f589Ad94e2865ac30b7bBF61F3);
-    IERC20 public constant PRIMALCOIN = IERC20(0x5A99A8A5225EF3f589Ad94e2865ac30b7bBF61F3);
+    // TODO: deploy contract and replace with new addresses
+    // Coin is deployed to: 0x669F2f448f248103eA3dcc12A7F49E559AFf7A2A
+    // Earth is deployed to: 0x0C059ddD14DE7F07c7fAec7e59a60c7bc610ea28
+    // Fire is deployed to: 0xb46Da3E5a1798E1f4f6965836Bd65424Ef02C8ee
+    // Life is deployed to: 0x7b92fDe64b15773D2C240C58AE4508E0A5ac5B4F
+    // Water is deployed to: 0xB2Fea2b212aD2AA230967084dA78eE4622A59617
+    // Wind is deployed to: 0xff975B63489E384CD481352C93a17fc3841b1614
+    // Source is deployed to: 0x54d3BdD5e7EE6bb0A900B1CbF1a0df144D9122df
+    IERC20 public constant WIND = IERC20(0xff975B63489E384CD481352C93a17fc3841b1614);
+    IERC20 public constant LIFE = IERC20(0x7b92fDe64b15773D2C240C58AE4508E0A5ac5B4F);
+    IERC20 public constant WATER = IERC20(0xB2Fea2b212aD2AA230967084dA78eE4622A59617);
+    IERC20 public constant FIRE = IERC20(0xb46Da3E5a1798E1f4f6965836Bd65424Ef02C8ee);
+    IERC20 public constant EARTH = IERC20(0x0C059ddD14DE7F07c7fAec7e59a60c7bc610ea28);
+    IERC20 public constant SOURCE = IERC20(0x54d3BdD5e7EE6bb0A900B1CbF1a0df144D9122df);
+    IERC20 public constant PRIMALCOIN = IERC20(0x669F2f448f248103eA3dcc12A7F49E559AFf7A2A);
 
     
     // struct Attribute {

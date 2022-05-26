@@ -23,7 +23,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  */
 module.exports = {
   solidity: "0.8.4",
-  defaultNetwork: "bsctestnet",
+  defaultNetwork: "polygontestnet",
   networks: {
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
@@ -32,6 +32,12 @@ module.exports = {
     },
     bsctestnet: {
       url: process.env.BSC_TEST_URL || "",
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    },
+
+    polygontestnet: {
+      url: process.env.POLYGON_TEST_URL || "",
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
     },
