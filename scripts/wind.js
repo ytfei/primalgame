@@ -25,7 +25,7 @@ async function main() {
 
   console.log(`Total Supply of [${name}] is ${totalSupply}`);
 
-  const address = "WIND_ADDRESS";
+  const address = process.env.USER_ADDRESS_1;
   await balanceOf(wind, address);
 
   const amount = BigNumber.from("100000");
