@@ -5,8 +5,8 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Fire is ERC20, Ownable {
-    constructor() ERC20("Primal Fire", "FIRE") {
+contract Earth is ERC20, Ownable {
+    constructor() ERC20("Primal Earth", "EARTH") {
     }
 
     function mint(address to, uint256 amount) public onlyOwner {
