@@ -5,20 +5,32 @@
 // Runtime Environment's members available in the global scope.
 const hre = require("hardhat");
 
-async function deploy(contractName) {
+async function deploy(contractName, ...args) {
   const ContractClass = await hre.ethers.getContractFactory(contractName);
-  const contractInst = await ContractClass.deploy();
+  const contractInst = await ContractClass.deploy(...args);
 
   await contractInst.deployed();
 
   console.log(`${contractName} is deployed to: ${contractInst.address}`);
+
+  return contractInst;
 }
 
 async function main() {
-  const contractNames = ["Mote", "Earth", "Fire", "Life", "Water", "Air", "Might"]
-  for (c of contractNames) {
-    await deploy(c)
-  }
+
+  // deploy 
+  const primalData = await deploy('PrimalData');
+
+  // TODO: need more arguments
+  const primalNFT = await deploy('PrimalNFT', 'Primal Spirits', 'PSPT', "https://primal-5c2fd.web.app/metadata/", primalData.address); 
+
+  // const pveAddress = await deploy('PrimalPve', primalNFT.address, primalData.address);
+
+  // const nftMining = await deploy('NFTMinging', primalNFT.address, primalData.address);
+
+
+  // const rewardPoolAddress = await deploy('RewardPool', nftMiningAddress, 10, 0);
+  // RewardPool is deployed by RewardPool while contructiing RewardPool
 
 }
 

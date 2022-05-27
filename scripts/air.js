@@ -17,7 +17,7 @@ async function main() {
   // await hre.run('compile');
 
   // We get the contract to deploy
-  const Wind = await hre.ethers.getContractFactory("Wind");
+  const Wind = await hre.ethers.getContractFactory("Air");
   const wind = await Wind.attach(process.env.WIND_ADDRESS);
 
   const name = await wind.name();

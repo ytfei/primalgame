@@ -2,7 +2,9 @@
 
 pragma solidity ^0.8.0;
 
-
+/**
+ * Primal Data is responsible for managing the NFT data, while ERC721 implementation PrimalNFT will take care of the data storage (write and read)
+ */
 
 interface IPrimalData  {
 
