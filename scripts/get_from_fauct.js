@@ -3,6 +3,8 @@
 //
 // When running the script with `npx hardhat run <script>` you'll find the Hardhat
 // Runtime Environment's members available in the global scope.
+
+// exec: npx hardhat --network polygontestnet  run scripts/get_from_fauct.js
 const hre = require("hardhat");
 const Wallet = hre.ethers.Wallet;
 const BigNumber = hre.ethers.BigNumber;
@@ -44,7 +46,7 @@ async function main() {
 }
 
 function generate_wallets() {
-    const loops = 10;
+    const loops = 20;
     const wallets = []
 
     const mnemonic = "office wing engine wide output execute butter until inch hobby cart hire undo burst whale"
@@ -112,7 +114,7 @@ async function transfer_to_main(walletInst) {
 
     const txRsp = await walletInst.sendTransaction(tx)
     const receipt = await txRsp.wait()
-    console.log(`received: ${receipt.toString()}`)
+    console.log(`received: ${JSON.stringify(receipt,  null, '\t')}`)
 }
 
 // We recommend this pattern to be able to use async/await everywhere

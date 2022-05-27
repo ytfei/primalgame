@@ -21,7 +21,6 @@ async function main() {
   // deploy 
   const primalData = await deploy('PrimalData');
 
-  // TODO: need more arguments
   const primalNFT = await deploy('PrimalNFT', 'Primal Spirits', 'PSPT', "https://primal-5c2fd.web.app/metadata/", primalData.address); 
 
   // const pveAddress = await deploy('PrimalPve', primalNFT.address, primalData.address);
