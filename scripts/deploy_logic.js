@@ -59,6 +59,10 @@ async function main() {
   console.log('begin to deply NFTMining and transfer tokens')
   const nftMining = await deploy('NFTMining', primalNFT.address, primalData.address, { gasLimit: 6721970 });
 
+  // set up reward pool
+  tx = await nftMining.setUpRewardPool()
+  txReceipt = await tx.wait()
+
   const libUintSet = await deploy('LibUintSet');
 
   const pveAddress = await deployWithLib('PrimalPve', libUintSet.address, primalNFT.address, primalData.address);

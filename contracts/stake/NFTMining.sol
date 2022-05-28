@@ -89,24 +89,25 @@ contract NFTMining is IMining, IERC721Receiver, Ownable {
         //         _getRewardPerBlock(),
         //         block.number
         //     );
-        //     rewardPool.push(RewardPool(pool));
+        //     rewardPool.push(pool);
         // }
 
         emit SetManager(address(0), manager);
     }
 
     // TODO: set reward pool from outside
-    // function addRewardPools(address pool) public onlyOwner {
-    //     //初始的时候有6个矿池
-    //     // for (uint256 i = 0; i < 6; i++) {
-    //     //     RewardPool pool = new RewardPool(
-    //     //         address(this),
-    //     //         _getRewardPerBlock(),
-    //     //         block.number
-    //     //     );
-    //     // }
-    //     // rewardPool.push(RewardPool(pool));
-    // }
+    function setUpRewardPool() public onlyOwner {
+        //初始的时候有6个矿池
+        for (uint256 i = 0; i < 6; i++) {
+            RewardPool pool = new RewardPool(
+                address(this),
+                _getRewardPerBlock(),
+                block.number
+            );
+
+            rewardPool.push(pool);
+        }
+    }
 
     //放到某个池子里挖矿
     function stake(uint256 tokenId, uint256 poolType)
