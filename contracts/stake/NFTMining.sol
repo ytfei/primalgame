@@ -74,7 +74,7 @@ contract NFTMining is IMining, IERC721Receiver, Ownable {
 
     //质押的NFT地址
     IERC721 public nftAddress; // Desposit nft address
-    
+
     //数据仓库地址
     IPrimalData public primalRepo;
 
@@ -83,23 +83,30 @@ contract NFTMining is IMining, IERC721Receiver, Ownable {
         primalRepo = _primalRepo;
         manager = msg.sender;
 
-        emit SetManager(address(0), manager);
-    }
-
-    // TODO: set reward pool from outside
-    function addRewardPools(address pool) public onlyOwner {
-        //初始的时候有6个矿池
         // for (uint256 i = 0; i < 6; i++) {
         //     RewardPool pool = new RewardPool(
         //         address(this),
         //         _getRewardPerBlock(),
         //         block.number
         //     );
-
+        //     rewardPool.push(RewardPool(pool));
         // }
 
-        rewardPool.push(RewardPool(pool));
+        emit SetManager(address(0), manager);
     }
+
+    // TODO: set reward pool from outside
+    // function addRewardPools(address pool) public onlyOwner {
+    //     //初始的时候有6个矿池
+    //     // for (uint256 i = 0; i < 6; i++) {
+    //     //     RewardPool pool = new RewardPool(
+    //     //         address(this),
+    //     //         _getRewardPerBlock(),
+    //     //         block.number
+    //     //     );
+    //     // }
+    //     // rewardPool.push(RewardPool(pool));
+    // }
 
     //放到某个池子里挖矿
     function stake(uint256 tokenId, uint256 poolType)

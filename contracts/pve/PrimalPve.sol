@@ -4,7 +4,7 @@ import "./PrimalPveBase.sol";
 import "../lib/struct/LibUintSet.sol";
 
 contract PrimalPve is PrimalPveBase{
-    // using LibUintSet for LibUintSet.UintSet;
+    using LibUintSet for LibUintSet.UintSet;
    
     constructor(
         IERC721 primalNft_,
