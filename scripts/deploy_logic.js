@@ -33,7 +33,7 @@ async function main() {
   assert.equal(nftAddress, primalNFT.address); // check that
 
   // grant role 
-  const roleName = utils.keccak256(utils.toUtf8Bytes("UPDATE_ROLE"));
+  const roleName = utils.id("UPDATE_ROLE");// equal utils.keccak256(utils.toUtf8Bytes("UPDATE_ROLE"));
   tx = await primalData.grantRole(roleName, primalNFT.address);
   txReceipt = await tx.wait();
 
