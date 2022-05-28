@@ -14,10 +14,7 @@ contract Element is ERC20, Ownable {
     function mint(address to, uint256 amount)
         public
         onlyOwner
-        returns (uint256)
     {
         _mint(to, amount);
-
-        return amount;
     }
 }
