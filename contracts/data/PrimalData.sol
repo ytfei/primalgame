@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.3;
 
-import "hardhat/console.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "../lib/LibRandom.sol";
 import "../interface/IPrimalData.sol";
@@ -10,6 +9,9 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "../lib/struct/LibUintSet.sol";
 
+/**
+ * 数据存储在 ERC721合约，逻辑则是封装在这里。这个合约的主要职责是管理NFT的属性、技能等。
+ */
 contract PrimalData is IPrimalData, AccessControl {
     using Counters for Counters.Counter;
     using LibUintSet for LibUintSet.UintSet;
@@ -57,8 +59,6 @@ contract PrimalData is IPrimalData, AccessControl {
     constructor() {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(UPDATE_ROLE, msg.sender);
-
-        console.log("PrimalData is deployed");
     }
 
     modifier isPrimalExist(uint256 tokenId) {

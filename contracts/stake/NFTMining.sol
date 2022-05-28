@@ -74,6 +74,7 @@ contract NFTMining is IMining, IERC721Receiver, Ownable {
 
     //质押的NFT地址
     IERC721 public nftAddress; // Desposit nft address
+    
     //数据仓库地址
     IPrimalData public primalRepo;
 
