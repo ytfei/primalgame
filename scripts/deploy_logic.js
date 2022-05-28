@@ -34,6 +34,12 @@ async function deployWithLib(contractName, libAddress, ...args) {
   return contractInst;
 }
 
+async function grantUpdateRole(primalData, contractAddress) {
+  const roleName = utils.id("UPDATE_ROLE");// equal utils.keccak256(utils.toUtf8Bytes("UPDATE_ROLE"));
+  const tx = await primalData.grantRole(roleName, contractAddress);
+  await tx.wait();
+}
+
 // async function transferTo(contractAddress, amount) {
 
 // }
@@ -52,22 +58,25 @@ async function main() {
   assert.equal(nftAddress, primalNFT.address); // check that
 
   // grant role 
-  const roleName = utils.id("UPDATE_ROLE");// equal utils.keccak256(utils.toUtf8Bytes("UPDATE_ROLE"));
-  tx = await primalData.grantRole(roleName, primalNFT.address);
-  txReceipt = await tx.wait();
+  await grantUpdateRole(primalData, primalNFT.address)
 
   console.log('begin to deply NFTMining and transfer tokens')
   const nftMining = await deploy('NFTMining', primalNFT.address, primalData.address, { gasLimit: 6721970 });
 
-  // set up reward pool
+  console.log('setup reward pool')
   tx = await nftMining.setUpRewardPool()
   txReceipt = await tx.wait()
 
+  console.log('begin to deploy PrimalPve')
   const libUintSet = await deploy('LibUintSet');
-
   const pveAddress = await deployWithLib('PrimalPve', libUintSet.address, primalNFT.address, primalData.address);
 
+  console.log('begin to deploy UpdatePrimalData')
+  const updatePrimalData = await deploy('UpdatePrimalData', primalNFT.address, primalData.address, pveAddress.address);
 
+  await grantUpdateRole(primalData, nftMining.address);
+  await grantUpdateRole(primalData, pveAddress.address);
+  await grantUpdateRole(primalData, updatePrimalData.address);
 
   // const rewardPoolAddress = await deploy('RewardPool', nftMiningAddress, 10, 0);
   // RewardPool is deployed by RewardPool while contructiing RewardPool
