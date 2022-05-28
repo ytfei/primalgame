@@ -19,6 +19,21 @@ async function deploy(contractName, ...args) {
   return contractInst;
 }
 
+async function deployWithLib(contractName, libAddress, ...args) {
+  const ContractClass = await hre.ethers.getContractFactory(contractName, {
+    libraries: {
+      LibUintSet: libAddress,
+    },
+  });
+  const contractInst = await ContractClass.deploy(...args);
+
+  await contractInst.deployed();
+
+  console.log(`${contractName} is deployed to: ${contractInst.address}`);
+
+  return contractInst;
+}
+
 // async function transferTo(contractAddress, amount) {
 
 // }
@@ -42,9 +57,11 @@ async function main() {
   txReceipt = await tx.wait();
 
   console.log('begin to deply NFTMining and transfer tokens')
-  const nftMining = await deploy('NFTMining', primalNFT.address, primalData.address);
+  const nftMining = await deploy('NFTMining', primalNFT.address, primalData.address, { gasLimit: 6721970 });
 
-  // const pveAddress = await deploy('PrimalPve', primalNFT.address, primalData.address);
+  const libUintSet = await deploy('LibUintSet');
+
+  const pveAddress = await deployWithLib('PrimalPve', libUintSet.address, primalNFT.address, primalData.address);
 
 
 

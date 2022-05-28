@@ -1,16 +1,17 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
-contract RewardPool  {
+contract RewardPool {
     using SafeMath for uint256;
 
     address private _manager;
 
-    function manager() public view returns (address) { return _manager; }
+    function manager() public view returns (address) {
+        return _manager;
+    }
 
     modifier onlyManager() {
         require(msg.sender == _manager, "only manager");
@@ -26,7 +27,7 @@ contract RewardPool  {
         uint256 rewardDebt;
     }
 
-    mapping (address => UserInfo) private _userInfo;
+    mapping(address => UserInfo) private _userInfo;
 
     //Total Stake Counting Power
     uint256 public totalStake;
@@ -38,32 +39,31 @@ contract RewardPool  {
     uint256 public lastRewardBlock;
     //Factor for block calculation rewards
     uint256 private _accRewardPerShare;
-   
-    
+
     event AddStake(address indexed user, uint256 indexed amount);
     event SubStake(address indexed user, uint256 indexed amount);
     event TakeReward(address indexed user, uint256 indexed amount);
-   
+
     constructor(
         address _stakeContract,
         uint256 _rewardPerBlock,
         uint256 _rewardStartBlock
-    )  {
+    ) {
         require(_stakeContract != address(0), "ctor: zero stake contract");
         require(_rewardPerBlock > 1e6, "ctor: reward per block is too small");
         _manager = _stakeContract;
         rewardPerBlock = _rewardPerBlock;
         rewardStartBlock = _rewardStartBlock;
-        lastRewardBlock = block.number > rewardStartBlock ? block.number : rewardStartBlock;
+        lastRewardBlock = block.number > rewardStartBlock
+            ? block.number
+            : rewardStartBlock;
     }
 
-    
     function userInfo(address _user) public view returns (uint256 stakeAmount) {
         UserInfo storage user = _userInfo[_user];
         stakeAmount = user.stake;
     }
 
-    
     function setRewardPerBlock(uint256 _rewardPerBlock) public onlyManager {
         updatePool();
         rewardPerBlock = _rewardPerBlock;
@@ -71,7 +71,11 @@ contract RewardPool  {
 
     function accRewardPerShare() public view returns (uint256) {
         //If the current block is smaller than the last rewarded block. Or the total stake is 0, or the rewardPerBlock is 0
-        if (block.number <= lastRewardBlock || totalStake == 0 || rewardPerBlock == 0 ) {
+        if (
+            block.number <= lastRewardBlock ||
+            totalStake == 0 ||
+            rewardPerBlock == 0
+        ) {
             return _accRewardPerShare;
         }
         uint256 multiplier = block.number.sub(lastRewardBlock);
@@ -95,8 +99,7 @@ contract RewardPool  {
             lastRewardBlock = block.number;
         }
     }
-    
-    
+
     function _farm(address _user) internal {
         updatePool();
         UserInfo storage user = _userInfo[_user];
@@ -109,17 +112,25 @@ contract RewardPool  {
         }
     }
 
-    function subReward(address _user,uint rate,uint stakeAmount) public onlyManager returns(uint256 plunderReward) {
-         _farm(_user);
+    function subReward(
+        address _user,
+        uint256 rate,
+        uint256 stakeAmount
+    ) public onlyManager returns (uint256 plunderReward) {
+        _farm(_user);
         UserInfo storage user = _userInfo[_user];
-        uint tokenRate = stakeAmount.div(user.stake) * 100;
+        uint256 tokenRate = stakeAmount.div(user.stake) * 100;
         plunderReward = user.rewardBalance.mul(tokenRate).mul(rate).div(10000);
         user.rewardBalance = user.rewardBalance.sub(plunderReward);
         user.rewardDebt = user.stake.mul(_accRewardPerShare).div(1e12);
         emit TakeReward(_user, plunderReward);
     }
 
-    function takeReward(address _user) public onlyManager returns (uint256 reward) {
+    function takeReward(address _user)
+        public
+        onlyManager
+        returns (uint256 reward)
+    {
         _farm(_user);
         UserInfo storage user = _userInfo[_user];
         reward = user.rewardBalance;
@@ -147,5 +158,4 @@ contract RewardPool  {
         user.rewardDebt = user.stake.mul(_accRewardPerShare).div(1e12);
         emit SubStake(_user, _amount);
     }
-
 }

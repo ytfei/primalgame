@@ -62,5 +62,4 @@ contract PrimalPve is PrimalPveBase{
         (bool success,uint256[] memory amount,uint256[] memory captureSelfIds,uint256[] memory captureEnemieIds) =  _battle3v3(playerHeroIds,group);
         emit BattleThreevThree(msg.sender,success,amount,captureSelfIds,captureEnemieIds);
     }
-
 }

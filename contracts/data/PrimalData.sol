@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.3;
 
+import "hardhat/console.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "../lib/LibRandom.sol";
 import "../interface/IPrimalData.sol";
@@ -56,6 +57,8 @@ contract PrimalData is IPrimalData, AccessControl {
     constructor() {
         _grantRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _grantRole(UPDATE_ROLE, msg.sender);
+
+        console.log("PrimalData is deployed");
     }
 
     modifier isPrimalExist(uint256 tokenId) {
