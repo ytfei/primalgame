@@ -108,3 +108,14 @@ Stake Contact：
 PVE Contact :
 - 0xc85E6172856F6D15dD6e5f8600655388af35587b
 
+# Deployment
+
+```bash
+
+cp .env.example .env 
+
+# edit .env by add your public+private key
+
+npm install
+npx hardhat run --network bsctestnet scripts/deploy_logic.js
+```
