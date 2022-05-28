@@ -19,12 +19,16 @@ async function deploy(contractName, ...args) {
   return contractInst;
 }
 
+// async function transferTo(contractAddress, amount) {
+
+// }
+
 async function main() {
 
   // deploy 
   const primalData = await deploy('PrimalData');
 
-  const primalNFT = await deploy('PrimalNFT', 'Primal Spirits', 'PSPT', "https://primal-5c2fd.web.app/metadata/", primalData.address); 
+  const primalNFT = await deploy('PrimalNFT', 'Primal Spirits', 'PSPT', "https://primal-5c2fd.web.app/metadata/", primalData.address);
 
   let tx = await primalData.setNFTAddress(primalNFT.address);
   let txReceipt = await tx.wait();
@@ -37,9 +41,11 @@ async function main() {
   tx = await primalData.grantRole(roleName, primalNFT.address);
   txReceipt = await tx.wait();
 
+  console.log('begin to deply NFTMining and transfer tokens')
+  const nftMining = await deploy('NFTMining', primalNFT.address, primalData.address);
+
   // const pveAddress = await deploy('PrimalPve', primalNFT.address, primalData.address);
 
-  // const nftMining = await deploy('NFTMinging', primalNFT.address, primalData.address);
 
 
   // const rewardPoolAddress = await deploy('RewardPool', nftMiningAddress, 10, 0);
