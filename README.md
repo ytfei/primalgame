@@ -121,3 +121,10 @@ cp .env.example .env
 npm install
 npx hardhat run --network bsctestnet scripts/deploy_logic.js
 ```
+
+```bash
+# Test with ganache
+npm install -g ganache 
+ganache -m "buzz track ticket fresh mom cigar net switch cruise response mention start"
+
+```
