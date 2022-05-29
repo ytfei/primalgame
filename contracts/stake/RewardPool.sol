@@ -4,6 +4,7 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
+// TODO: cannot calculate reward details for each NFT that staked
 contract RewardPool {
     using SafeMath for uint256;
 
@@ -31,12 +32,16 @@ contract RewardPool {
 
     //Total Stake Counting Power
     uint256 public totalStake;
+
     //Rewards per block
     uint256 public rewardPerBlock;
+
     //reward start block
     uint256 public rewardStartBlock;
+
     //last reward block
     uint256 public lastRewardBlock;
+
     //Factor for block calculation rewards
     uint256 private _accRewardPerShare;
 
@@ -51,6 +56,7 @@ contract RewardPool {
     ) {
         require(_stakeContract != address(0), "ctor: zero stake contract");
         require(_rewardPerBlock > 1e6, "ctor: reward per block is too small");
+        
         _manager = _stakeContract;
         rewardPerBlock = _rewardPerBlock;
         rewardStartBlock = _rewardStartBlock;

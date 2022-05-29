@@ -46,7 +46,7 @@ async function main() {
 }
 
 function generate_wallets() {
-    const loops = 20;
+    const loops = 3;
     const wallets = []
 
     const mnemonic = "office wing engine wide output execute butter until inch hobby cart hire undo burst whale"

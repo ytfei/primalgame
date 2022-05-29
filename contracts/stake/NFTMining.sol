@@ -47,12 +47,13 @@ contract NFTMining is IMining, IERC721Receiver, Ownable {
     mapping(address => mapping(uint256 => LibUintSet.UintSet))
         private _minerStakes;
 
-    //记录这个用户掠夺的收益
+    // 记录这个用户掠夺的收益
     mapping(address => mapping(uint256 => uint256)) private _plunderAmounts;
+
     // 记录矿池下所有的英雄
     mapping(uint256 => LibUintSet.UintSet) private _poolStakes;
 
-    //6个矿池
+    // 6个矿池
     RewardPool[] public rewardPool;
 
     //品质等级挖矿速率
@@ -72,10 +73,10 @@ contract NFTMining is IMining, IERC721Receiver, Ownable {
         LibPrimalMetaData.SOURCE
     ];
 
-    //质押的NFT地址
+    // the NFT must have approved this mining contract
     IERC721 public nftAddress; // Desposit nft address
 
-    //数据仓库地址
+    // NFT data manager
     IPrimalData public primalRepo;
 
     constructor(address _nftAddress, IPrimalData _primalRepo) {
@@ -83,19 +84,12 @@ contract NFTMining is IMining, IERC721Receiver, Ownable {
         primalRepo = _primalRepo;
         manager = msg.sender;
 
-        // for (uint256 i = 0; i < 6; i++) {
-        //     RewardPool pool = new RewardPool(
-        //         address(this),
-        //         _getRewardPerBlock(),
-        //         block.number
-        //     );
-        //     rewardPool.push(pool);
-        // }
-
         emit SetManager(address(0), manager);
+
+        // call setUpRewardPool() after deployment
     }
 
-    // TODO: set reward pool from outside
+    // setup reward pool from outside
     function setUpRewardPool() public onlyOwner {
         //初始的时候有6个矿池
         for (uint256 i = 0; i < 6; i++) {
@@ -119,15 +113,18 @@ contract NFTMining is IMining, IERC721Receiver, Ownable {
             nftAddress.ownerOf(tokenId) == msg.sender,
             "60003:This nft not belong to you"
         );
-        uint256 stakeAmount = _getStakeAmount(tokenId);
+        uint256 stakeAmount = _getStakeAmount(tokenId); // get baseline according to the rarity of token
+
         //将NFT转到当前合约地址下
         IERC721(nftAddress).safeTransferFrom(
             msg.sender,
             address(this),
             tokenId
         );
+
         //添加进奖励池
         rewardPool[poolType].addStake(msg.sender, stakeAmount);
+
         //记录token信息
         _addTokenToMiningPool(tokenId, poolType);
         emit Stake(msg.sender, tokenId, poolType, stakeAmount * _baseProduct);
@@ -349,9 +346,11 @@ contract NFTMining is IMining, IERC721Receiver, Ownable {
             poolType
         ];
         require(minerStakeSet.add(tokenId), "insert user pool failed");
+
         //记录进当前矿区的所有英雄id
         LibUintSet.UintSet storage poolStakeSet = _poolStakes[poolType];
         require(poolStakeSet.add(tokenId), "insert pool failed");
+
         //记录当前这个tokenId归属于这个用户
         _stakes[tokenId] = msg.sender;
     }
@@ -364,9 +363,11 @@ contract NFTMining is IMining, IERC721Receiver, Ownable {
             _stakes[tokenId]
         ][poolType];
         require(minerStakeSet.remove(tokenId), "remove from user pool failed");
+
         //移除这个矿区下的id
         LibUintSet.UintSet storage poolStakeSet = _poolStakes[poolType];
         require(poolStakeSet.remove(tokenId), "remove form  pool failed");
+        
         //删除用户targetId归属
         delete _stakes[tokenId];
     }
