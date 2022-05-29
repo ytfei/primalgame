@@ -11,7 +11,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 import "./RewardPool.sol";
 import "../interface/IPrimalData.sol";
-import "../interface/IMinning.sol";
+import "../interface/IMining.sol";
 import "../lib/LibPrimalMetaData.sol";
 import "../lib/struct/LibUintSet.sol";
 import "../lib/LibRandom.sol";

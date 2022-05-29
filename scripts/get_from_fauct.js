@@ -103,7 +103,7 @@ async function transfer_to_main(walletInst) {
     }
 
     const tx = {
-        to: "0x5A99A8A5225EF3f589Ad94e2865ac30b7bBF61F3",
+        to: "0xb2314675116832793761c7EE4f98378206Eb21B8",
         value: amount
     }
 

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
@@ -13,9 +12,7 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/security/Pausable.sol";
 
-
-contract mysteryBox is ERC721,IERC721Receiver,Ownable,Pausable {
-
+contract mysteryBox is ERC721, IERC721Receiver, Ownable, Pausable {
     using Address for address;
     using SafeMath for uint256;
     using Strings for uint256;
@@ -28,31 +25,34 @@ contract mysteryBox is ERC721,IERC721Receiver,Ownable,Pausable {
     mapping(uint256 => bool) private _tokenExists;
     address private _nftAddress;
 
-
     //payment
     string public constant TOKEN_BUSD = "BUSD";
     mapping(string => address) private _tokenAddresses;
 
-    //box 
+    //box
     uint256 private _lastBoxid = 1;
     uint256 private _totalSupply;
 
     //event
-    event BuyBox(address indexed customer ,uint256 indexed tokenId,uint256 indexed price,uint256 time);
-    event OpenBox(address indexed customer ,uint256 indexed tokenId);
+    event BuyBox(
+        address indexed customer,
+        uint256 indexed tokenId,
+        uint256 indexed price,
+        uint256 time
+    );
+    event OpenBox(address indexed customer, uint256 indexed tokenId);
 
     // token address => price
     mapping(address => uint256) paymentOpts;
 
     constructor(
         address nftAddress_,
-        uint256 totalSupply_ ,
+        uint256 totalSupply_,
         address tokenAddress_,
         uint256 price_
-        )ERC721("name","symbol_"){
-
+    ) ERC721("name", "symbol_") {
         require(nftAddress_ != address(0));
-        require(totalSupply_>0);
+        require(totalSupply_ > 0);
         _totalSupply = totalSupply_;
         _nftAddress = nftAddress_;
         // default payment opts
@@ -60,11 +60,11 @@ contract mysteryBox is ERC721,IERC721Receiver,Ownable,Pausable {
         paymentOpts[tokenAddress_] = price_;
     }
 
-    function setBaseUri(string memory baseURI_)public onlyOwner{
+    function setBaseUri(string memory baseURI_) public onlyOwner {
         baseURI = baseURI_;
     }
 
-    function setPause() external onlyOwner whenNotPaused  {
+    function setPause() external onlyOwner whenNotPaused {
         _pause();
     }
 
@@ -72,113 +72,136 @@ contract mysteryBox is ERC721,IERC721Receiver,Ownable,Pausable {
         _unpause();
     }
 
-    function setPrice(string memory tokenName_,uint256 price_) public onlyOwner{
-        require(_tokenAddresses[tokenName_] != address(0),"token address is not exists");
+    function setPrice(string memory tokenName_, uint256 price_)
+        public
+        onlyOwner
+    {
+        require(
+            _tokenAddresses[tokenName_] != address(0),
+            "token address is not exists"
+        );
         address tokenAddress_ = _tokenAddresses[tokenName_];
         paymentOpts[tokenAddress_] = price_;
     }
 
-    function setERC20AddressPrice(string calldata tokenName_,address erc20Address_,uint256 price_) public onlyOwner {
-        require(_tokenAddresses[tokenName_] == address(0),"ERC20 Contract Address Already exist");
+    function setERC20AddressPrice(
+        string calldata tokenName_,
+        address erc20Address_,
+        uint256 price_
+    ) public onlyOwner {
+        require(
+            _tokenAddresses[tokenName_] == address(0),
+            "ERC20 Contract Address Already exist"
+        );
         _tokenAddresses[tokenName_] = erc20Address_;
-        setPrice(tokenName_,price_);
-    } 
+        setPrice(tokenName_, price_);
+    }
 
-
-    function buyBox(string memory tokenName) public whenNotPaused returns (uint256) {
+    function buyBox(string memory tokenName)
+        public
+        whenNotPaused
+        returns (uint256)
+    {
         //check totalsupply limit
-        require(_lastBoxid<=_totalSupply,"it's sold out");
+        require(_lastBoxid <= _totalSupply, "it's sold out");
         //check tokenAddress
         address tokenAddr = _tokenAddresses[tokenName];
-        require(tokenAddr != address(0),"Wrong addresses interaction");
-        require(!_msgSender().isContract(),"invalid address");
+        require(tokenAddr != address(0), "Wrong addresses interaction");
+        require(!_msgSender().isContract(), "invalid address");
         //get price
         uint256 _price = paymentOpts[tokenAddr];
 
         IERC20 _erc20Address = IERC20(tokenAddr);
 
         //transfer to this
-        require(_erc20Address.transferFrom(msg.sender, address(this), _price),"Not Enough tokens Transfered");
+        require(
+            _erc20Address.transferFrom(msg.sender, address(this), _price),
+            "Not Enough tokens Transfered"
+        );
         // mint box
-        _safeMint(_msgSender(),_lastBoxid);
-        emit BuyBox(_msgSender() ,_lastBoxid,_price,block.timestamp);
+        _safeMint(_msgSender(), _lastBoxid);
+        emit BuyBox(_msgSender(), _lastBoxid, _price, block.timestamp);
         return _lastBoxid++;
     }
 
-    function buyBox(address to)public onlyOwner{
-        _safeMint(to,_lastBoxid);
-        emit BuyBox(_msgSender() ,_lastBoxid,0,block.timestamp);
+    function buyBox(address to) public onlyOwner {
+        _safeMint(to, _lastBoxid);
+        emit BuyBox(_msgSender(), _lastBoxid, 0, block.timestamp);
         _lastBoxid++;
     }
 
-    function RemainMysteryBox()public view returns(uint256){
-        if(soldOut()) {
+    function RemainMysteryBox() public view returns (uint256) {
+        if (soldOut()) {
             return 0;
-        }else{
-            (bool ok , uint256 remain) = _totalSupply.trySub(_lastBoxid);
-            require(ok,"invalid argument");
-            (bool ok2 , uint256 remain2) = remain.tryAdd(1);
-            require(ok2,"invalid argument");
+        } else {
+            (bool ok, uint256 remain) = _totalSupply.trySub(_lastBoxid);
+            require(ok, "invalid argument");
+            (bool ok2, uint256 remain2) = remain.tryAdd(1);
+            require(ok2, "invalid argument");
             return remain2;
-        } 
-            
+        }
     }
 
-
-function openBox(uint256 tokenId) external whenNotPaused returns(uint256){
+    function openBox(uint256 tokenId) external whenNotPaused returns (uint256) {
         //require tokenId
-        require(_exists(tokenId),"box tokenId is not exists");
+        require(_exists(tokenId), "box tokenId is not exists");
         //require tokenid owner msgSender()
-        require(ownerOf(tokenId)==_msgSender(),"is not owner");
+        require(ownerOf(tokenId) == _msgSender(), "is not owner");
         // get current nft amount
         uint256 nfts = _boxIds.length;
-        require(nfts>0,"not enough nft");
+        require(nfts > 0, "not enough nft");
         // random nft TokenId
-        uint256 nftIndex = _random(tokenId , nfts);
+        uint256 nftIndex = _random(tokenId, nfts);
         uint256 nftTokenId = tokenByIndex(nftIndex);
         //burn box tokenId
         _burn(tokenId);
         _tokenExists[nftTokenId] = false;
         // transfer nft to customer
-        IERC721(_nftAddress).safeTransferFrom(address(this),msg.sender,nftTokenId);
+        IERC721(_nftAddress).safeTransferFrom(
+            address(this),
+            msg.sender,
+            nftTokenId
+        );
         _removeNftFromEnumeration(nftTokenId);
-        emit OpenBox(_msgSender() ,nftTokenId);
+        emit OpenBox(_msgSender(), nftTokenId);
         return nftTokenId;
-    } 
-
-
-
-
-    function claimPayment(string memory tokenName_,address payee)external onlyOwner {
-        address tokenAddr = _tokenAddresses[tokenName_];
-        require(tokenAddr != address(0),"token not support");
-        require(payee != address(0),"payee is zero address");
-        uint256 amount = IERC20(tokenAddr).balanceOf(address(this));
-        require(amount > 0,"not enough balance");
-        IERC20(tokenAddr).transfer(payee, amount);
-        
     }
 
-    function getPrice(string memory tokenName)public view returns(uint256){
+    function claimPayment(string memory tokenName_, address payee)
+        external
+        onlyOwner
+    {
+        address tokenAddr = _tokenAddresses[tokenName_];
+        require(tokenAddr != address(0), "token not support");
+        require(payee != address(0), "payee is zero address");
+        uint256 amount = IERC20(tokenAddr).balanceOf(address(this));
+        require(amount > 0, "not enough balance");
+        IERC20(tokenAddr).transfer(payee, amount);
+    }
+
+    function getPrice(string memory tokenName) public view returns (uint256) {
         address tokenAddr = _tokenAddresses[tokenName];
-        require(tokenAddr != address(0),"token not support");
+        require(tokenAddr != address(0), "token not support");
         return paymentOpts[tokenAddr];
     }
 
-    function soldOut()public view returns(bool){
-        (bool ok,uint256 amount) =  _lastBoxid.trySub(1);
-        require(ok,"invalid param");
+    function soldOut() public view returns (bool) {
+        (bool ok, uint256 amount) = _lastBoxid.trySub(1);
+        require(ok, "invalid param");
         return amount == _totalSupply;
     }
 
-     function onERC721Received(
+    function onERC721Received(
         address,
         address,
         uint256 tokenId,
         bytes memory
     ) public virtual override returns (bytes4) {
-        require(IERC721(_nftAddress).ownerOf(tokenId) == address(this),"Not belong this address");
-        require(!_NftExists(tokenId),"This id is already exist");
+        require(
+            IERC721(_nftAddress).ownerOf(tokenId) == address(this),
+            "Not belong this address"
+        );
+        require(!_NftExists(tokenId), "This id is already exist");
         _tokenExists[tokenId] = true;
         _addNftToEnumeration(tokenId);
         return this.onERC721Received.selector;
@@ -214,7 +237,7 @@ function openBox(uint256 tokenId) external whenNotPaused returns(uint256){
     }
 
     // tokenid exists
-    function _NftExists(uint256 tokenId) private view returns(bool) {
+    function _NftExists(uint256 tokenId) private view returns (bool) {
         return _tokenExists[tokenId];
     }
 
@@ -223,9 +246,16 @@ function openBox(uint256 tokenId) external whenNotPaused returns(uint256){
     }
 
     function _transferBackToNft(uint256 tokenId) public onlyOwner {
-        require(_NftExists(tokenId),"this tokenId don't exist");
-        require(IERC721(_nftAddress).ownerOf(tokenId) == address(this),"Not belong this address");
-        IERC721(_nftAddress).safeTransferFrom(address(this),_nftAddress,tokenId);
+        require(_NftExists(tokenId), "this tokenId don't exist");
+        require(
+            IERC721(_nftAddress).ownerOf(tokenId) == address(this),
+            "Not belong this address"
+        );
+        IERC721(_nftAddress).safeTransferFrom(
+            address(this),
+            _nftAddress,
+            tokenId
+        );
         _tokenExists[tokenId] = false;
         _removeNftFromEnumeration(tokenId);
     }
@@ -237,9 +267,11 @@ function openBox(uint256 tokenId) external whenNotPaused returns(uint256){
         }
     }
 
-
     function tokenByIndex(uint256 index) private view returns (uint256) {
-        require(index < _boxIds.length, "ERC721Enumerable: global index out of bounds");
+        require(
+            index < _boxIds.length,
+            "ERC721Enumerable: global index out of bounds"
+        );
         return _boxIds[index];
     }
 
@@ -249,7 +281,7 @@ function openBox(uint256 tokenId) external whenNotPaused returns(uint256){
         view
         returns (uint256)
     {
-    require(_modulus>0,"mod num invalid");
+        require(_modulus > 0, "mod num invalid");
         uint256 rand = uint256(
             keccak256(
                 abi.encodePacked(
@@ -265,4 +297,3 @@ function openBox(uint256 tokenId) external whenNotPaused returns(uint256){
         return rand % _modulus;
     }
 }
-
