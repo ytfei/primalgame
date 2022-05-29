@@ -74,17 +74,18 @@ async function main() {
 
   console.log('begin to deploy PrimalPve')
   const libUintSet = await deploy('LibUintSet');
-  const pveAddress = await deployWithLib('PrimalPve', libUintSet.address, primalNFT.address, primalData.address);
+  const primalPve = await deployWithLib('PrimalPve', libUintSet.address, primalNFT.address, primalData.address);
 
   console.log('begin to deploy UpdatePrimalData')
-  const updatePrimalData = await deploy('UpdatePrimalData', primalNFT.address, primalData.address, pveAddress.address);
+  const updatePrimalData = await deploy('UpdatePrimalData', primalNFT.address, primalData.address, primalPve.address);
 
   console.log('grant UPDATE_ROLE privilege to system contracts')
   await grantUpdateRole(primalData, primalNFT.address)
   await grantUpdateRole(primalData, nftMining.address);
-  await grantUpdateRole(primalData, pveAddress.address);
+  await grantUpdateRole(primalData, primalPve.address);
   await grantUpdateRole(primalData, updatePrimalData.address);
 
+  // deploy and mint resources to contracts
   const elements =
     [
       ["Primal Air", "WIND"],
@@ -102,10 +103,15 @@ async function main() {
 
     console.log(`mint [${ele[0]}] resources for system contracts`)
     await mintTo(ele[0], eleInst.address, nftMining.address, utils.parseEther("1000"))
-    await mintTo(ele[0], eleInst.address, pveAddress.address, utils.parseEther("1000"))
+    await mintTo(ele[0], eleInst.address, primalPve.address, utils.parseEther("1000"))
   }
 
-  // TODO: mint NFT 
+  // mint NFT to Pve as monsters
+  console.log('mint NFT to primalPve')
+  for (var i = 0; i < 10; i++) {
+    tx = await primalNFT.mint(primalPve.address, i, "https://primal-5c2fd.web.app/metadata/");
+    await tx.wait();
+  }
 
 }
 
