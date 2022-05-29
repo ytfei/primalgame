@@ -7,6 +7,7 @@ const hre = require("hardhat");
 const utils = hre.ethers.utils;
 require("dotenv").config();
 
+// deploy resources
 async function deploy(...args) {
   const ContractClass = await hre.ethers.getContractFactory("Element");
   const contractInst = await ContractClass.deploy(...args);
@@ -28,6 +29,8 @@ async function deploy(...args) {
 
     // console.log(`${name}: mint ${amount} to ${process.env.GANACHE_PUBLIC_KEY}`);
   }
+
+  return contractInst
 }
 
 async function main() {
@@ -41,9 +44,11 @@ async function main() {
   await deploy("Primal Mote", "PRIMALCOIN")
 }
 
+module.exports.deploy = deploy;
+
 // We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+// // and properly handle errors.
+// main().catch((error) => {
+//   console.error(error);
+//   process.exitCode = 1;
+// });

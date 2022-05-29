@@ -8,6 +8,8 @@ const utils = hre.ethers.utils;
 
 const { assert } = require("chai");
 
+const { deploy: deploy_elements } = require("./deploy_elements.js");
+
 async function deploy(contractName, ...args) {
   const ContractClass = await hre.ethers.getContractFactory(contractName);
   const contractInst = await ContractClass.deploy(...args);
@@ -40,9 +42,15 @@ async function grantUpdateRole(primalData, contractAddress) {
   await tx.wait();
 }
 
-// async function transferTo(contractAddress, amount) {
+async function mintTo(elementName, elementAddress, contractAddress, amount) {
+  const Element = await hre.ethers.getContractFactory("Element");
+  const inst = await Element.attach(elementAddress);
 
-// }
+  let tx = await inst.mint(contractAddress, amount);
+  const receipt = await tx.wait();
+
+  console.log(`mint resource ${elementName} from ${elementAddress} to ${contractAddress} with ${amount}`);
+}
 
 async function main() {
 
@@ -56,9 +64,6 @@ async function main() {
 
   let nftAddress = await primalData.nftAddress();
   assert.equal(nftAddress, primalNFT.address); // check that
-
-  // grant role 
-  await grantUpdateRole(primalData, primalNFT.address)
 
   console.log('begin to deply NFTMining and transfer tokens')
   const nftMining = await deploy('NFTMining', primalNFT.address, primalData.address, { gasLimit: 6721970 });
@@ -74,12 +79,33 @@ async function main() {
   console.log('begin to deploy UpdatePrimalData')
   const updatePrimalData = await deploy('UpdatePrimalData', primalNFT.address, primalData.address, pveAddress.address);
 
+  console.log('grant UPDATE_ROLE privilege to system contracts')
+  await grantUpdateRole(primalData, primalNFT.address)
   await grantUpdateRole(primalData, nftMining.address);
   await grantUpdateRole(primalData, pveAddress.address);
   await grantUpdateRole(primalData, updatePrimalData.address);
 
-  // const rewardPoolAddress = await deploy('RewardPool', nftMiningAddress, 10, 0);
-  // RewardPool is deployed by RewardPool while contructiing RewardPool
+  const elements =
+    [
+      ["Primal Air", "WIND"],
+      ["Primal Earth", "EARTH"],
+      ["Primal Fire", "FIRE"],
+      ["Primal Life", "LIFE"],
+      ["Primal Might", "SOURCE"],
+      ["Primal Water", "WATER"],
+
+      ["Primal Mote", "PRIMALCOIN"]
+    ];
+
+  for (let ele of elements) {
+    const eleInst = await deploy_elements(ele[0], ele[1]);
+
+    console.log(`mint [${ele[0]}] resources for system contracts`)
+    await mintTo(ele[0], eleInst.address, nftMining.address, utils.parseEther("1000"))
+    await mintTo(ele[0], eleInst.address, pveAddress.address, utils.parseEther("1000"))
+  }
+
+  // TODO: mint NFT 
 
 }
 
