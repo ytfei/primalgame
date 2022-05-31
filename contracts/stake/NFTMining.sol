@@ -59,10 +59,13 @@ contract NFTMining is IMining, IERC721Receiver, Ownable {
     //品质等级挖矿速率
     uint256[5] private _baseMining = [1, 3, 9, 27, 81];
     uint256[5] private _basePlunerRate = [50, 60, 70, 80, 90];
+
     //基础产量为每小时10个
     uint256 private _baseProduct = 10 ether;
+
     //每3秒一个区块
     uint256 private _baseBlockTime = 3;
+
     //初始时候有6个ERC20的token地址
     IERC20[] public tokens = [
         LibPrimalMetaData.WIND,
@@ -142,8 +145,12 @@ contract NFTMining is IMining, IERC721Receiver, Ownable {
         );
         uint256 stakeAmount = _getStakeAmount(tokenId);
         _removeTokenFromMiningPool(tokenId, poolType);
+
         //减少质押数量
         rewardPool[poolType].subStake(msg.sender, stakeAmount);
+        // TODO: 这里忘了把产出结算给用户
+        // takeReward();
+
         //转给用户
         nftAddress.safeTransferFrom(address(this), msg.sender, tokenId);
         emit Unstake(msg.sender, stakeAmount);
@@ -367,7 +374,7 @@ contract NFTMining is IMining, IERC721Receiver, Ownable {
         //移除这个矿区下的id
         LibUintSet.UintSet storage poolStakeSet = _poolStakes[poolType];
         require(poolStakeSet.remove(tokenId), "remove form  pool failed");
-        
+
         //删除用户targetId归属
         delete _stakes[tokenId];
     }
