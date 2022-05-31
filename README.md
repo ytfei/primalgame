@@ -5,6 +5,8 @@ Players can control powerful heroes to explore the Primal world, fight with enem
 The token and NFT circulation will be automatically optimized through smart contract.
 Primal’s objective is to build a totally decentralized, open and free Metaverse game!
 
+You can get the details of the product description with [Primal.rp](./GameFi-Primal.rp)
+
 ## Gameplay
 1. Becoming stronger is the dream of every primal hero.
 2. Access channels by selecting suitable resources according to the skill attributes.
@@ -112,19 +114,36 @@ PVE Contact :
 
 # Deployment
 
-```bash
-
-cp .env.example .env 
-
-# edit .env by add your public+private key
-
-npm install
-npx hardhat run --network bsctestnet scripts/deploy_logic.js
-```
+Startup ganache for deployment:
 
 ```bash
 # Test with ganache
 npm install -g ganache 
 ganache -m "buzz track ticket fresh mom cigar net switch cruise response mention start"
+```
 
+Deploy contracts: 
+```bash
+cp .env.example .env 
+
+# edit .env by add your public+private key
+
+npm install
+npx hardhat run --network ganache scripts/deploy_logic.js
+
+# deploy to Polygon test network
+# npx hardhat run --network polygontestnet scripts/deploy_logic.js
+```
+
+Startup front end app:
+```bash
+
+# edit .env by add your public+private key
+git clone https://github.com/ytfei/primalgame-web.git
+
+cd primalgame-web && npm install
+
+
+# deploy to Polygon test network
+# npx hardhat run --network polygontestnet scripts/deploy_logic.js
 ```
