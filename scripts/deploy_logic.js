@@ -9,6 +9,7 @@ const utils = hre.ethers.utils;
 const { assert } = require("chai");
 
 const { deploy: deploy_elements } = require("./deploy_elements.js");
+require("dotenv").config();
 
 async function deploy(contractName, ...args) {
   const ContractClass = await hre.ethers.getContractFactory(contractName);
@@ -54,10 +55,16 @@ async function mintTo(elementName, elementAddress, contractAddress, amount) {
 
 async function main() {
 
+  const provider = hre.ethers.provider;
+  console.log(`${JSON.stringify(hre.config, "", "\t")} ||| ${JSON.stringify(provider)}`)
+
+  const signer = provider.getSigner();
+  console.log(`${await signer.getAddress()} = ${await signer.getBalance()}`)
+
   // deploy 
   const primalData = await deploy('PrimalData');
 
-  const primalNFT = await deploy('PrimalNFT', 'Primal Spirits', 'PSPT', "https://primal-5c2fd.web.app/metadata/", primalData.address);
+  const primalNFT = await deploy('PrimalNFT', 'Primal Spirits', 'PSPT', "https://primal-game.web.app/metadata/", primalData.address);
 
   let tx = await primalData.setNFTAddress(primalNFT.address);
   let txReceipt = await tx.wait();

@@ -174,7 +174,7 @@ module.exports = {
     },
   },
 
-  defaultNetwork: "ganache",
+  defaultNetwork: "polygontestnet",
   networks: {
     ropsten: {
       url: process.env.ROPSTEN_URL || "",
