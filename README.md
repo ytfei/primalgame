@@ -148,3 +148,16 @@ cd primalgame-web && npm install
 # deploy to Polygon test network
 # npx hardhat run --network polygontestnet scripts/deploy_logic.js
 ```
+
+Obtain test accounts:
+```bash
+# Account 1:
+pubkey = 0xc83137B107145A6FC6ED35B4d044b83b8afE9C5E
+privatekey = 0x6a1ba97a95504a6b7749a1b56b1d34c03172dba7a32b2c412fc0792f7b4f32bd
+
+# Account 2:
+pubkey = 0x1Fc45F0135ae644aAc217Ed2e16b6E82D3a700ec
+privatekey = 0xeaaa6dc7f8f0ee3543f6b8be9b5fc53973daffcf817a395f71c903b226f4313a
+```
+
+> import test accounts to Metamask, and switch to Polygon Test Network.
