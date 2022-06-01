@@ -1,3 +1,4 @@
+![](./doc/head.png)
 # Primal
 ## Introduction
 Primal is an NFT Card RPG game on Polygon.
